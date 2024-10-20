@@ -2,7 +2,7 @@
 	double linked list reverse
 	This problem requires you to reverse a doubly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -25,19 +25,19 @@ impl<T> Node<T> {
     }
 }
 #[derive(Debug)]
-struct LinkedList<T> {
+struct LinkedList<T: Clone> {
     length: u32,
     start: Option<NonNull<Node<T>>>,
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -58,6 +58,18 @@ impl<T> LinkedList<T> {
         self.end = node_ptr;
         self.length += 1;
     }
+    
+    pub fn add_first(&mut self, obj: T) {
+        let mut node = Box::new(Node::new(obj));
+        node.next = self.start;
+        node.prev = None;
+        let node_ptr = Some(unsafe { NonNull::new_unchecked(Box::into_raw(node)) });
+        if self.start.is_none(){
+            self.end = node_ptr;
+        }
+        self.start = node_ptr;
+        self.length += 1;
+    }
 
     pub fn get(&mut self, index: i32) -> Option<&T> {
         self.get_ith_node(self.start, index)
@@ -74,10 +86,19 @@ impl<T> LinkedList<T> {
     }
 	pub fn reverse(&mut self){
 		// TODO
+        let mut new_list : LinkedList<T> = LinkedList::new();
+        let mut current = self.start;
+        while let Some(node) = current {
+            let val = unsafe {(*node.as_ptr()).val.clone()};
+            new_list.add_first(val);
+            current = unsafe {(*node.as_ptr()).next };
+        }
+        *self = new_list;
+
 	}
 }
 
-impl<T> Display for LinkedList<T>
+impl<T: Display + Clone> Display for LinkedList<T>
 where
     T: Display,
 {
@@ -89,7 +110,7 @@ where
     }
 }
 
-impl<T> Display for Node<T>
+impl<T: Display + Clone> Display for Node<T>
 where
     T: Display,
 {

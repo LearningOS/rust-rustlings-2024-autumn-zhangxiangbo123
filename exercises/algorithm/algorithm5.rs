@@ -3,12 +3,48 @@
 	This problem requires you to implement a basic BFS algorithm
 */
 
-//I AM NOT DONE
+
 use std::collections::VecDeque;
 
 // Define a graph
 struct Graph {
     adj: Vec<Vec<usize>>, 
+}
+
+struct Queue{
+    items: Vec<usize>,
+    front: usize,
+    rear: usize,
+}
+
+impl Queue{
+    fn new() -> Queue{
+        Queue{
+            items:Vec::new(),
+            front: 0,
+            rear: 0,
+        }
+    }
+
+    fn enqueue(&mut self,value: usize){
+        self.items.push(value);
+        self.rear+=1;
+    }
+
+    fn dequeue(&mut self) -> Option<usize>{
+        if self.front < self.rear{
+            let value = self.items[self.front];
+            self.front+=1;
+            Some(value)
+        }
+        else{
+            None
+        }
+    }
+
+    fn is_empty(&self) -> bool{
+        self.front == self.rear
+    }
 }
 
 impl Graph {
@@ -24,16 +60,58 @@ impl Graph {
         self.adj[src].push(dest); 
         self.adj[dest].push(src); 
     }
-
+/*
     // Perform a breadth-first search on the graph, return the order of visited nodes
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
+            let mut visited = vec![false; self.adj.len()];
+            let mut queue = VecDeque::new();
+            let mut order = vec![];
+    
+            visited[start] = true;
+            queue.push_back(start);
+    
+            while let Some(node) = queue.pop_front() {
+                order.push(node);
+    
+                for &neighbour in &self.adj[node] {
+                    if !visited[neighbour] {
+                        visited[neighbour] = true;
+                        queue.push_back(neighbour);
+                    }
+                }
+            }
+    
+            order
+        }
+        */
+        fn bfs_with_return(&self, start: usize) -> Vec<usize> {
         
-		//TODO
-
-        let mut visit_order = vec![];
-        visit_order
+            let mut q = Queue::new();
+            let mut visited = vec![false;self.adj.len()];
+            let mut visit_order = Vec::new();
+    
+            q.enqueue(start);
+            visited[start] = true;
+    
+            while !Queue::is_empty(&q) {
+                if let Some(node) = q.dequeue(){
+                    visit_order.push(node);
+    
+                    for &neighbor in &self.adj[node] {
+                        if !visited[neighbor] {
+                            q.enqueue(neighbor);
+                            visited[neighbor] = true;
+                        }
+                    }
+                }
+            }
+            visit_order
+        }
     }
-}
+    
+    
+    
+
 
 
 #[cfg(test)]
