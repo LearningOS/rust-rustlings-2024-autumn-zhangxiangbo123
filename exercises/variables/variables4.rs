@@ -1,12 +1,9 @@
-// variables4.rs
-//
-// Execute `rustlings hint variables4` or use the `hint` watch subcommand for a
-// hint.
-
-
 fn main() {
+    // In Rust, variables are immutable by default.
+    // Adding the `mut` keyword after `let` makes the declared variable mutable.
     let mut x = 3;
-    println!("Number {}", x);
-    x = 5; // don't change this line
-    println!("Number {}", x);
+    println!("Number {x}");
+
+    x = 5;
+    println!("Number {x}");
 }

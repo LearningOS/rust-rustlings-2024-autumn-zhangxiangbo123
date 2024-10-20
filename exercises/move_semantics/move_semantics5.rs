@@ -1,17 +1,23 @@
-// move_semantics5.rs
-//
-// Make me compile only by reordering the lines in `main()`, but without adding,
-// changing or removing any of them.
-//
-// Execute `rustlings hint move_semantics5` or use the `hint` watch subcommand
-// for a hint.
-
+#![allow(clippy::ptr_arg)]
 
 fn main() {
-    let mut x = 100;
-    let y = &mut x;
-    *y += 100;
-    let z = &mut x;
-    *z += 1000;
-    assert_eq!(x, 1200);
+    let data = "Rust is great!".to_string();
+
+    get_char(&data);
+
+    string_uppercase(data);
+}
+
+// Borrows instead of taking ownership.
+// It is recommended to use `&str` instead of `&String` here. But this is
+// enough for now because we didn't handle strings yet.
+fn get_char(data: &String) -> char {
+    data.chars().last().unwrap()
+}
+
+// Takes ownership instead of borrowing.
+fn string_uppercase(mut data: String) {
+    data = data.to_uppercase();
+
+    println!("{data}");
 }
